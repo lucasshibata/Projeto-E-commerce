@@ -2,15 +2,30 @@ package com.lucas_shibata.api_ecommerce.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.lucas_shibata.api_ecommerce.dto.RegisterRequest;
+import com.lucas_shibata.api_ecommerce.dto.UserResponse;
+import com.lucas_shibata.api_ecommerce.service.AuthService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+
 @RestController 
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor 
 public class AuthController {
+
+    private final AuthService authService;
     
     @PostMapping("/register")
-    public String AuthRegister(@RequestBody String body){
-        return "olá";
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request){
+        UserResponse created = authService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 }
