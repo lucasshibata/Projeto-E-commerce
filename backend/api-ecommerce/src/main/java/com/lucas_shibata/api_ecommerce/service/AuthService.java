@@ -15,11 +15,14 @@ import lombok.RequiredArgsConstructor;
 @Service 
 @RequiredArgsConstructor 
 public class AuthService {
-    private final UserRepository UserRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional 
     public UserResponse register(RegisterRequest request){
-        return new UserResponse(UUID.randomUUID(), request.name(), request.email(), "customer");
+        String emailNormalizado = request.email().trim().toLowerCase();
+        String passwordHash = passwordEncoder.encode(request.password().trim());
+        UUID idRetornado = userRepository.insert(request.cpf().trim(), request.name().trim(), request.birthDate(), emailNormalizado, passwordHash);
+        return new UserResponse(idRetornado, request.name().trim(), emailNormalizado, "customer");
     }
 }
